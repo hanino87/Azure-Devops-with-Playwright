@@ -6,5 +6,5 @@ jobs:
   - job: Test
     displayName: 'Run Playwright Tests'
     steps:
-     - script: echo "Test"
-      displayName: 'Echo Simple Test'
+      - script: echo 'Running tests with BASE_URL: ${{ parameters.BASE_URL }}'
+        displayName: 'Echo BASE_URL'
