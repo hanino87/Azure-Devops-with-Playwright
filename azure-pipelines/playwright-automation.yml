@@ -13,6 +13,6 @@ stages:
     displayName: 'Run Automation Test - QA'
     dependsOn: []
     jobs:
-      - template: azure-pipelines/playwright_template.yml
+      - template: playwright_template.yml
         parameters:
           BASE_URL: ''  # Set a valid URL here if needed
