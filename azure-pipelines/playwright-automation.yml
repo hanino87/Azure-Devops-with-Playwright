@@ -9,11 +9,10 @@ trigger:
 name: $(Build.BuildId)
 
 stages:
-
   - stage: qa
     displayName: 'Run Automation Test - QA'
     dependsOn: []
     jobs:
-      - template: playwright_template.yml
+      - template: azure-pipelines/playwright_template.yml
         parameters:
-          BASE_URL: ''
+          BASE_URL: ''  # Set a valid URL here if needed
