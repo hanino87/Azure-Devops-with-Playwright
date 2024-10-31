@@ -2,12 +2,6 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config({ path: path.resolve(__dirname, '.env') });
-
-/**
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
@@ -20,17 +14,35 @@ module.exports = defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters 
+  Set to:'never', change to 'always' to launch report automatically after execution */
+  reporter: [ 
+    ['html', { open: 'never' }],
+    ['junit', {outputFile: 'results.xml'}] //required for Azure DevOps Pipeline
+  ],
+  
+
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    /* Maximum time each action such as `click()` can take. 
+        Defaults to 0 (no limit). */
+    actionTimeout: 60 * 1000,
+    navigationTimeout: 30 * 1000,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    /* Collect trace when retrying the failed test. 
+    See https://playwright.dev/docs/trace-viewer */
+    trace: 'on',
+    screenshot: 'only-on-failure',
+    video: {
+      mode: 'on'
+    },
+    headless: true,
+    viewport: { width: 1900, height: 940 },
+    launchOptions: {
+        slowMo: 500,
+    },
   },
-
+  
   /* Configure projects for major browsers */
   projects: [
     {
@@ -48,6 +60,9 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
+  ],
+
+});
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
@@ -67,7 +82,7 @@ module.exports = defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
+  
 
   /* Run your local dev server before starting the tests */
   // webServer: {
@@ -75,5 +90,5 @@ module.exports = defineConfig({
   //   url: 'http://127.0.0.1:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
-});
+
 
